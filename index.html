@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שרטוט הנדסי - מערך לוחות חשמל וכבילה (מהדורה להדפסה וביצוע)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Rubik & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Rubik', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            panel: '#1e293b',
+            rail: '#0f172a',
+            din: '#334155',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==========================================================================
+       PRINT-SPECIFIC STYLESHEET (OPTIMIZED FOR A3 / A4 LANDSCAPE PRINTING)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: landscape;
+        margin: 8mm 6mm;
+      }
+
+      *, *:before, *:after {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        font-size: 10pt !important;
+      }
+
+      /* Hide interactive toolbar, filters, tabs, and inspector sidebar */
+      .no-print, #inspector-col {
+        display: none !important;
+      }
+
+      /* Allow panels container to use full page width */
+      .grid {
+        display: block !important;
+      }
+      #panels-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+      }
+
+      /* Panel Cards in Print */
+      .panel-container {
+        display: block !important;
+        background: #ffffff !important;
+        border: 1.5pt solid #1e293b !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        margin-bottom: 12mm !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        padding: 8px 10px !important;
+      }
+
+      .panel-container h2 {
+        color: #0f172a !important;
+        font-size: 11pt !important;
+      }
+      .panel-container p, .panel-container span {
+        color: #334155 !important;
+      }
+
+      .din-groove {
+        background: #e2e8f0 !important;
+        opacity: 0.6 !important;
+      }
+      .bg-slate-950 {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 4px !important;
+      }
+
+      /* Breaker Cards - Prevent Text Cutoff */
+      .breaker-card {
+        box-shadow: none !important;
+        filter: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        min-height: 64px !important;
+        padding: 3px 2px !important;
+        border-width: 1.2pt !important;
+        border-radius: 4px !important;
+      }
+
+      .breaker-card * {
+        white-space: normal !important;
+        text-overflow: clip !important;
+        overflow: visible !important;
+        word-break: break-word !important;
+      }
+
+      .breaker-card .breaker-title {
+        font-size: 7.2pt !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        margin: 2px 0 !important;
+      }
+
+      .breaker-card .breaker-meta {
+        font-size: 6.2pt !important;
+        line-height: 1 !important;
+        font-weight: 600 !important;
+      }
+
+      .breaker-card.bg-red-600, .breaker-card.bg-red-700, .breaker-card.bg-red-900 {
+        background-color: #fee2e2 !important;
+        border-color: #b91c1c !important;
+      }
+      .breaker-card.bg-red-600 .breaker-meta, .breaker-card.bg-red-700 .breaker-meta, .breaker-card.bg-red-900 .breaker-meta {
+        color: #991b1b !important;
+      }
+
+      .breaker-card.bg-sky-600, .breaker-card.bg-sky-700, .breaker-card.bg-sky-800 {
+        background-color: #e0f2fe !important;
+        border-color: #0284c7 !important;
+      }
+      .breaker-card.bg-sky-600 .breaker-meta, .breaker-card.bg-sky-700 .breaker-meta, .breaker-card.bg-sky-800 .breaker-meta {
+        color: #0369a1 !important;
+      }
+
+      .breaker-card.bg-amber-500, .breaker-card.bg-amber-600, .breaker-card.bg-amber-700 {
+        background-color: #fef3c7 !important;
+        border-color: #d97706 !important;
+      }
+      .breaker-card.bg-amber-500 .breaker-meta, .breaker-card.bg-amber-600 .breaker-meta, .breaker-card.bg-amber-700 .breaker-meta {
+        color: #92400e !important;
+      }
+
+      .breaker-card.bg-emerald-600, .breaker-card.bg-emerald-700, .breaker-card.bg-emerald-800 {
+        background-color: #d1fae5 !important;
+        border-color: #059669 !important;
+      }
+      .breaker-card.bg-emerald-600 .breaker-meta, .breaker-card.bg-emerald-700 .breaker-meta, .breaker-card.bg-emerald-800 .breaker-meta {
+        color: #065f46 !important;
+      }
+
+      .breaker-card.bg-indigo-600, .breaker-card.bg-indigo-700, .breaker-card.bg-indigo-800 {
+        background-color: #e0e7ff !important;
+        border-color: #4f46e5 !important;
+      }
+      .breaker-card.bg-indigo-600 .breaker-meta, .breaker-card.bg-indigo-700 .breaker-meta, .breaker-card.bg-indigo-800 .breaker-meta {
+        color: #3730a3 !important;
+      }
+
+      .breaker-card.bg-purple-600 {
+        background-color: #f3e8ff !important;
+        border-color: #9333ea !important;
+      }
+      .breaker-card.bg-purple-600 .breaker-meta {
+        color: #6b21a8 !important;
+      }
+
+      .breaker-card.bg-cyan-500, .breaker-card.bg-cyan-600, .breaker-card.bg-cyan-700, .breaker-card.bg-cyan-800 {
+        background-color: #cffafe !important;
+        border-color: #0891b2 !important;
+      }
+      .breaker-card.bg-cyan-500 .breaker-meta, .breaker-card.bg-cyan-600 .breaker-meta, .breaker-card.bg-cyan-700 .breaker-meta, .breaker-card.bg-cyan-800 .breaker-meta {
+        color: #155e75 !important;
+      }
+
+      .breaker-card.bg-orange-600 {
+        background-color: #ffedd5 !important;
+        border-color: #ea580c !important;
+      }
+      .breaker-card.bg-orange-600 .breaker-meta {
+        color: #9a3412 !important;
+      }
+
+      .breaker-card.bg-slate-700, .breaker-card.bg-slate-800\/80 {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+      }
+      .breaker-card.bg-slate-700 .breaker-meta, .breaker-card.bg-slate-800\/80 .breaker-meta {
+        color: #475569 !important;
+      }
+
+      .page-break-after {
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+
+      #sec-topology svg {
+        background: #ffffff !important;
+        max-height: 190mm !important;
+      }
+      #sec-topology rect[fill="#18181b"],
+      #sec-topology rect[fill="#1c1917"],
+      #sec-topology rect[fill="#0f172a"],
+      #sec-topology rect[fill="#064e3b"],
+      #sec-topology rect[fill="#1e1b4b"],
+      #sec-topology rect[fill="#164e63"] {
+        fill: #f8fafc !important;
+      }
+      #sec-topology text {
+        fill: #0f172a !important;
+      }
+    }
+
+    .din-groove {
+      background: repeating-linear-gradient(
+        90deg,
+        #475569,
+        #475569 8px,
+        #334155 8px,
+        #334155 16px
+      );
+    }
+
+    .breaker-card {
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .breaker-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      filter: brightness(1.08);
+      z-index: 10;
+    }
+    .breaker-card.selected {
+      outline: 3px solid #38bdf8;
+      outline-offset: 1px;
+      z-index: 20;
+    }
+
+    .grid-cols-18 { grid-template-columns: repeat(18, minmax(0, 1fr)); }
+    .grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .col-span-1 { grid-column: span 1 / span 1; }
+    .col-span-2 { grid-column: span 2 / span 2; }
+    .col-span-3 { grid-column: span 3 / span 3; }
+    .col-span-4 { grid-column: span 4 / span 4; }
+    .col-span-6 { grid-column: span 6 / span 6; }
+    .col-span-7 { grid-column: span 7 / span 7; }
+    .col-span-8 { grid-column: span 8 / span 8; }
+    .col-span-9 { grid-column: span 9 / span 9; }
+    .col-span-10 { grid-column: span 10 / span 10; }
+    .col-span-12 { grid-column: span 12 / span 12; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen p-3 md:p-6 flex flex-col items-center">
+
+  <!-- Architectural Title & Header -->
+  <header class="w-full max-w-7xl mb-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4">
+    <div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="px-2.5 py-0.5 text-xs font-bold rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">מהדורת ביצוע והדפסה A3 / A4</span>
+        <span class="text-xs text-slate-400">הזנה: 3x63A (כבל 5x25 ממ"ש) | שיטת הגנה: TN-C-S</span>
+        <span class="text-xs px-2 py-0.5 rounded bg-sky-900/60 text-sky-300 border border-sky-700/50">מערך 5 לוחות מופרדים (186TE)</span>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mt-1.5 text-white">
+        תוכנית לוחות חשמל, כבילה והזנות: <span class="text-sky-400">ארון ראשי 2×54 + 3 לוחות משנה</span>
+      </h1>
+      <p class="text-slate-400 text-xs md:text-sm mt-0.5">בית פרטי 208 מ"ר | לוח א' (מוח, סולאר ומשאבת דגים 10mA) | לוח ב' (כבדים) | לוח גג IP65 | לוח קומה ב' | לוח חוץ ואינטקס (10mA)</p>
+    </div>
+
+    <!-- Actions & Print Toolbar -->
+    <div class="flex flex-wrap items-center gap-2 no-print">
+      <button onclick="triggerPrint('all')" class="flex items-center gap-2 px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs md:text-sm font-bold shadow-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        הדפסת כל המערך (ללא חיתוך טקסט)
+      </button>
+      <button onclick="triggerPrint('current')" class="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition">
+        הדפס תצוגה פעילה בלבד
+      </button>
+    </div>
+  </header>
+
+  <!-- View Selection Tabs -->
+  <div class="w-full max-w-7xl mb-4 bg-slate-900 border border-slate-800 rounded-xl p-1.5 flex flex-wrap items-center justify-start gap-1 text-xs no-print">
+    <span class="text-slate-400 font-bold px-2 flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+      תצוגת מסך:
+    </span>
+    <button onclick="switchView('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-bold bg-sky-600 text-white transition">מבט כולל (כל 5 הלוחות)</button>
+    <button onclick="switchView('main')" id="tab-main" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">ארון ראשי (א'+ב' - 108TE)</button>
+    <button onclick="switchView('roof')" id="tab-roof" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">לוח גג סולארי IP65 (18TE)</button>
+    <button onclick="switchView('floor2')" id="tab-floor2" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">לוח משנה קומה ב' (36TE)</button>
+    <button onclick="switchView('outdoor')" id="tab-outdoor" class="px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition">לוח חוץ ובריכות IP65 (24TE)</button>
+    <button onclick="switchView('topology')" id="tab-topology" class="px-3 py-1.5 rounded-lg font-bold text-amber-300 hover:text-white border border-amber-500/30 bg-amber-500/10 transition flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      תרשים טופולוגיית כבילה גרפי
+    </button>
+  </div>
+
+  <!-- Legend & Filter Bar -->
+  <div class="w-full max-w-7xl mb-6 bg-slate-900/80 border border-slate-800 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-bold text-slate-300 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-sky-400"></span> מקרא מעגלים:
+      </span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-red-600"></span> מבוא ראשי/הגנות</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-amber-500"></span> בורר Bypass / סולאר</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-sky-600"></span> גיבוי סוללה (UPS)</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-purple-600"></span> טעינת EV (Type B)</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-600"></span> VRF ומשאבת חום</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-indigo-600"></span> הזנות לוחות משנה</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-cyan-500"></span> הגנות בריכות (10mA)</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-orange-600"></span> כוח מטבח/שגרה</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-700 border border-dashed border-slate-500"></span> עתודה</span>
+    </div>
+
+    <!-- Quick filter buttons -->
+    <div class="flex items-center gap-1 self-end md:self-auto bg-slate-950 p-1 rounded-lg border border-slate-800 text-[11px] no-print">
+      <span class="text-slate-500 px-1">סינון:</span>
+      <button onclick="setFilter('all')" id="btn-all" class="px-2 py-0.5 rounded bg-sky-600 text-white font-bold">הכל</button>
+      <button onclick="setFilter('ups')" id="btn-ups" class="px-2 py-0.5 rounded text-slate-300 hover:text-white">UPS</button>
+      <button onclick="setFilter('solar')" id="btn-solar" class="px-2 py-0.5 rounded text-slate-300 hover:text-white">סולאר</button>
+      <button onclick="setFilter('heavy')" id="btn-heavy" class="px-2 py-0.5 rounded text-slate-300 hover:text-white">כבדים</button>
+      <button onclick="setFilter('pool')" id="btn-pool" class="px-2 py-0.5 rounded text-slate-300 hover:text-white">בריכות</button>
+      <button onclick="setFilter('spare')" id="btn-spare" class="px-2 py-0.5 rounded text-slate-300 hover:text-white">עתודה</button>
+    </div>
+  </div>
+
+  <!-- Main Workspace (Panels & Inspector) -->
+  <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Boards Container -->
+    <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6" id="panels-wrapper">
+
+      <!-- ==================== BOARD A ==================== -->
+      <section id="sec-boardA" class="panel-container bg-slate-900 border-2 border-sky-900/50 rounded-2xl p-4 md:p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm border border-sky-500/30">א'</div>
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                לוח א' ראשי - מבוא, מוח, חירום (UPS) ובריכת דגים (10mA)
+                <span class="text-xs px-2 py-0.2 rounded bg-sky-950 text-sky-300 border border-sky-800 font-normal">54 מודולים (3×18)</span>
+              </h2>
+              <p class="text-xs text-slate-400">ארון ראשי קומת קרקע | מונה חכם, בורר סולארי, פחת ייעודי 10mA לבריכת דגים (24/7)</p>
+            </div>
+          </div>
+          <div class="text-left font-mono text-xs text-slate-300">
+            תפוסה: <span class="text-sky-400 font-bold">43 / 54</span> TE <span class="text-slate-500">|</span> עתודה: <span class="text-emerald-400 font-bold">20.4%</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <!-- Row 1 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 1: ציוד מבוא ראשי, הגנות ברקים ובורר סולארי</span>
+              <span>18 / 18 TE</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardA-r1"></div>
+            </div>
+          </div>
+          <!-- Row 2 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 2: הזנות מערכת (גג + לוח ב') ומעגלי גיבוי סוללה חיוניים</span>
+              <span>14 בשימוש + 4 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardA-r2"></div>
+            </div>
+          </div>
+          <!-- Row 3 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 3: תריסים, WFH, שער, בקרי DIN והגנת בריכת דגים (פחת 10mA מוגבה UPS)</span>
+              <span>11 בשימוש + 7 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardA-r3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BOARD B ==================== -->
+      <section id="sec-boardB" class="panel-container page-break-after bg-slate-900 border-2 border-emerald-900/50 rounded-2xl p-4 md:p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm border border-emerald-500/30">ב'</div>
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                לוח ב' ראשי - שגרה וצרכנים כבדים
+                <span class="text-xs px-2 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-normal">54 מודולים (3×18)</span>
+              </h2>
+              <p class="text-xs text-slate-400">ארון ראשי קומת קרקע | מוזן בכבל 5x16 מלוח א' | מבודד ממעגלי גיבוי</p>
+            </div>
+          </div>
+          <div class="text-left font-mono text-xs text-slate-300">
+            תפוסה: <span class="text-emerald-400 font-bold">49 / 54</span> TE <span class="text-slate-500">|</span> עתודה: <span class="text-emerald-400 font-bold">9.3%</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <!-- Row 1 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 1: מבוא לוח ב' ומערכות אקלים תלת-פאזיות</span>
+              <span>16 בשימוש + 2 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardB-r1"></div>
+            </div>
+          </div>
+          <!-- Row 2 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 2: הזנות לוחות משנה, ג'קוזי ועמדות טעינה (RCBO Type B)</span>
+              <span>17 בשימוש + 1 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardB-r2"></div>
+            </div>
+          </div>
+          <!-- Row 3 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 3: פחת ראשי שגרה וקווי כוח ייעודיים למטבח ושירות</span>
+              <span>16 בשימוש + 2 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardB-r3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ROOF SOLAR PANEL ==================== -->
+      <section id="sec-boardRoof" class="panel-container bg-slate-900 border-2 border-amber-900/60 rounded-2xl p-4 md:p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">גג</div>
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                לוח גג סולארי ואגירה (IP65 מוגן UV)
+                <span class="text-xs px-2 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-800 font-normal">18 מודולים (1×18)</span>
+              </h2>
+              <p class="text-xs text-slate-400">קיר צפוני מוצל | הגנות DC פאנלים, ניתוק AC ממיר ומפסק כבאים</p>
+            </div>
+          </div>
+          <div class="text-left font-mono text-xs text-slate-300">
+            תפוסה: <span class="text-amber-400 font-bold">14 / 18</span> TE <span class="text-slate-500">|</span> עתודה: <span class="text-emerald-400 font-bold">22.2%</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+            <span>פס DIN ראשי גג: ניתוק מהיר, מפסקי DC למחרוזות, הגנת AC ומגן ברקים</span>
+            <span>14 בשימוש + 4 עתודה</span>
+          </div>
+          <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+            <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+            <div class="grid grid-cols-18 gap-1 relative z-10" id="boardRoof-r1"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== FLOOR 2 SUB-PANEL ==================== -->
+      <section id="sec-boardFloor2" class="panel-container bg-slate-900 border-2 border-indigo-900/50 rounded-2xl p-4 md:p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm border border-indigo-500/30">ק'ב</div>
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                לוח משנה קומה ב' - חדרי שינה, עבודה ורחצה
+                <span class="text-xs px-2 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-normal">36 מודולים (2×18)</span>
+              </h2>
+              <p class="text-xs text-slate-400">מסדרון קומה ב' | מוזן בכבל 5x6 ממ"ש (3x32A) + קו גיבוי UPS לעמדות מחשבים</p>
+            </div>
+          </div>
+          <div class="text-left font-mono text-xs text-slate-300">
+            תפוסה: <span class="text-indigo-400 font-bold">20 / 36</span> TE <span class="text-slate-500">|</span> עתודה: <span class="text-emerald-400 font-bold">44.4%</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <!-- Row 1 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 1: מבוא קומה ב', פחת ראשי, מעגלי UPS ייעודיים (WFH ומאור)</span>
+              <span>12 בשימוש + 6 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardFloor2-r1"></div>
+            </div>
+          </div>
+          <!-- Row 2 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 2: שקעים כלליים לחדרים, תנורי אמבטיה ישירים ובקרי תאורה</span>
+              <span>8 בשימוש + 10 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-18 gap-1 relative z-10" id="boardFloor2-r2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== OUTDOOR & POOLS SUB-PANEL ==================== -->
+      <section id="sec-boardOutdoor" class="panel-container page-break-after bg-slate-900 border-2 border-cyan-900/60 rounded-2xl p-4 md:p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm border border-cyan-500/30">חוץ</div>
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                לוח משנה מטבח חוץ, גינה ובריכת אינטקס (IP65 מוגן מים)
+                <span class="text-xs px-2 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-normal">24 מודולים (2×12)</span>
+              </h2>
+              <p class="text-xs text-slate-400">חצר הבית | מוזן בכבל 5x6 ממ"ש (3x25A) | פחת רגיש 10mA לבריכת אינטקס</p>
+            </div>
+          </div>
+          <div class="text-left font-mono text-xs text-slate-300">
+            תפוסה: <span class="text-cyan-400 font-bold">11 / 24</span> TE <span class="text-slate-500">|</span> עתודה: <span class="text-emerald-400 font-bold">54.1%</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <!-- Row 1 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 1: מבוא 3x25A, פחת ראשי לחוץ 30mA, תנור חוץ ושקעי שירות</span>
+              <span>10 בשימוש + 2 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-12 gap-1.5 relative z-10" id="boardOutdoor-r1"></div>
+            </div>
+          </div>
+          <!-- Row 2 -->
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 font-mono mb-1 px-1">
+              <span>שורה 2: מעגל בריכת אינטקס מוגן בפחת 10mA</span>
+              <span>3 בשימוש + 9 עתודה</span>
+            </div>
+            <div class="relative bg-slate-950 p-2 rounded-xl border border-slate-800">
+              <div class="absolute inset-x-2 top-1/2 -translate-y-1/2 h-6 din-groove rounded opacity-40 pointer-events-none"></div>
+              <div class="grid grid-cols-12 gap-1.5 relative z-10" id="boardOutdoor-r2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== GRAPHICAL INTERACTIVE TOPOLOGY SCHEMATIC ==================== -->
+      <section id="sec-topology" class="panel-container bg-slate-900 border-2 border-amber-500/40 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-800 mb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 text-xs font-bold rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">שרטוט טופולוגי הנדסי מלא</span>
+              <span class="text-xs text-slate-400 font-mono">הזנות, כבילה, אפסים מבודדים ותקשורת</span>
+            </div>
+            <h2 class="text-lg font-black text-white mt-1 flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              תרשים גרפי: חיבורי כוח וכבילה בין כל 5 הלוחות
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">בריכת הדגים מוזנת ישירות מלוח א' בבית (פחת 10mA מוגבה סוללה)</p>
+          </div>
+
+          <!-- Topology Line Filters -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs no-print">
+            <span class="text-slate-400 text-[11px]">הדגש תוואי:</span>
+            <button onclick="highlightPath('all')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-bold">הכל</button>
+            <button onclick="highlightPath('grid')" class="px-2 py-0.5 rounded bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800/60 text-[11px] font-bold">רשת 63A</button>
+            <button onclick="highlightPath('solar')" class="px-2 py-0.5 rounded bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-800/60 text-[11px] font-bold">סולאר + גג</button>
+            <button onclick="highlightPath('ups')" class="px-2 py-0.5 rounded bg-sky-950/80 hover:bg-sky-900 text-sky-300 border border-sky-800/60 text-[11px] font-bold">גיבוי EPS</button>
+            <button onclick="highlightPath('subs')" class="px-2 py-0.5 rounded bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 border border-indigo-800/60 text-[11px] font-bold">לוחות משנה</button>
+          </div>
+        </div>
+
+        <!-- SVG Schematic Canvas -->
+        <div class="relative w-full overflow-x-auto bg-slate-950 rounded-xl p-2 md:p-3 border border-slate-800/80">
+          <svg viewBox="0 0 1120 660" class="w-full min-w-[900px] h-auto select-none font-sans" xmlns="http://www.w3.org/2000/svg" dir="rtl" style="direction: rtl;">
+            <defs>
+              <marker id="arr-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#ef4444" />
+              </marker>
+              <marker id="arr-amber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#f59e0b" />
+              </marker>
+              <marker id="arr-sky" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8" />
+              </marker>
+              <marker id="arr-emerald" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#10b981" />
+              </marker>
+              <marker id="arr-indigo" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#818cf8" />
+              </marker>
+              <marker id="arr-cyan" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#06b6d4" />
+              </marker>
+            </defs>
+
+            <!-- Pattern background -->
+            <pattern id="diag-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 20 M 0 0 L 20 20" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.4"/>
+            </pattern>
+            <rect width="1120" height="660" fill="url(#diag-grid)" rx="10"/>
+
+            <!-- 1. Grid Infeed: Pillar -> Board A -->
+            <g id="path-grid" class="topo-path transition-all duration-300">
+              <path d="M 920 75 L 450 75 L 450 140" fill="none" stroke="#ef4444" stroke-width="5" stroke-linecap="round" marker-end="url(#arr-red)" />
+              <rect x="580" y="49" width="230" height="26" rx="6" fill="#1e1b4b" stroke="#ef4444" stroke-width="1.5" class="cursor-pointer" onclick="showCableInfo('grid')"/>
+              <text x="695" y="66" fill="#fca5a5" font-size="11" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">כבל 5x25 ממ"ש XLPE (3x63A)</text>
+            </g>
+
+            <!-- 2. Board A -> Roof Panel: AC Infeed to Inverter -->
+            <g id="path-solar-ac" class="topo-path transition-all duration-300">
+              <path d="M 350 140 L 350 80 L 160 80 L 160 140" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" marker-end="url(#arr-amber)" />
+              <rect x="195" y="58" width="145" height="22" rx="5" fill="#451a03" stroke="#f59e0b" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('roof-ac')"/>
+              <text x="267" y="73" fill="#fde68a" font-size="10" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">AC 5x6 ממ"ש (3x25A)</text>
+            </g>
+
+            <!-- 3. Roof Panel -> Board A: EPS Emergency Backfeed -->
+            <g id="path-solar-eps" class="topo-path transition-all duration-300">
+              <path d="M 180 320 L 180 345 L 320 345 L 320 300" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" stroke-linecap="round" marker-end="url(#arr-sky)" />
+              <rect x="190" y="333" width="140" height="22" rx="5" fill="#082f49" stroke="#38bdf8" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('roof-eps')"/>
+              <text x="260" y="348" fill="#bae6fd" font-size="10" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">EPS גיבוי 5x6 ממ"ש</text>
+            </g>
+
+            <!-- 4. Board A -> Roof: Cat6 Smart Meter Communication -->
+            <g id="path-smart-meter" class="topo-path transition-all duration-300">
+              <path d="M 390 140 L 390 105 L 200 105 L 200 140" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,3" stroke-linecap="round" marker-end="url(#arr-emerald)" />
+              <rect x="235" y="93" width="135" height="20" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="1" class="cursor-pointer" onclick="showCableInfo('smart-meter')"/>
+              <text x="302" y="107" fill="#a7f3d0" font-size="9.5" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">Cat6 תקשורת CTs</text>
+            </g>
+
+            <!-- 5. Main Busbar Bridge: Board A -> Board B -->
+            <g id="path-bridge-ab" class="topo-path transition-all duration-300">
+              <path d="M 550 215 L 610 215" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" marker-end="url(#arr-emerald)" />
+              <rect x="548" y="180" width="76" height="30" rx="5" fill="#064e3b" stroke="#10b981" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('bridge-ab')"/>
+              <text x="586" y="194" fill="#a7f3d0" font-size="9.5" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">5x16</text>
+              <text x="586" y="206" fill="#6ee7b7" font-size="8.5" text-anchor="middle">גישור ראשי</text>
+            </g>
+
+            <!-- 6. Board B -> Floor 2 Sub-panel -->
+            <g id="path-sub-floor2" class="topo-path transition-all duration-300">
+              <path d="M 720 300 L 720 410" fill="none" stroke="#818cf8" stroke-width="4" stroke-linecap="round" marker-end="url(#arr-indigo)" />
+              <rect x="655" y="340" width="130" height="24" rx="5" fill="#1e1b4b" stroke="#818cf8" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('floor2-feed')"/>
+              <text x="720" y="356" fill="#c7d2fe" font-size="10" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">5x6 ממ"ש (3x32A)</text>
+            </g>
+
+            <!-- 7. Board A -> Floor 2 (Dedicated UPS Circuit) -->
+            <g id="path-ups-floor2" class="topo-path transition-all duration-300">
+              <path d="M 430 300 L 430 460 L 590 460" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="6,4" stroke-linecap="round" marker-end="url(#arr-sky)" />
+              <rect x="445" y="448" width="135" height="22" rx="5" fill="#082f49" stroke="#38bdf8" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('floor2-ups')"/>
+              <text x="512" y="463" fill="#bae6fd" font-size="9.5" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">קו UPS 3x2.5 (WFH)</text>
+            </g>
+
+            <!-- 8. Board B -> Outdoor Sub-panel -->
+            <g id="path-sub-outdoor" class="topo-path transition-all duration-300">
+              <path d="M 820 300 L 820 370 L 980 370 L 980 410" fill="none" stroke="#06b6d4" stroke-width="4" stroke-linecap="round" marker-end="url(#arr-cyan)" />
+              <rect x="850" y="358" width="135" height="24" rx="5" fill="#164e63" stroke="#06b6d4" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('outdoor-feed')"/>
+              <text x="917" y="374" fill="#a5f3fc" font-size="10" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">5x6 ממ"ש (3x25A)</text>
+            </g>
+
+            <!-- 9. Board A -> Fish Pond: Dedicated 10mA UPS line -->
+            <g id="path-fish-pond" class="topo-path transition-all duration-300">
+              <path d="M 330 300 L 330 520 L 180 520 L 180 480" fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arr-cyan)" />
+              <rect x="200" y="508" width="145" height="22" rx="5" fill="#164e63" stroke="#06b6d4" stroke-width="1.2" class="cursor-pointer" onclick="showCableInfo('fish-feed')"/>
+              <text x="272" y="523" fill="#a5f3fc" font-size="9.5" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">משאבת דגים (פחת 10mA)</text>
+            </g>
+
+            <!-- NODES -->
+            <!-- NODE 0: Grid Pillar -->
+            <g class="cursor-pointer" onclick="showCableInfo('grid')">
+              <rect x="890" y="40" width="190" height="72" rx="10" fill="#18181b" stroke="#ef4444" stroke-width="2" />
+              <circle cx="1060" cy="58" r="5" fill="#ef4444" />
+              <text x="1045" y="62" fill="#ffffff" font-size="12.5" font-weight="bold" text-anchor="start">פילר רשת חח"י</text>
+              <text x="985" y="82" fill="#f87171" font-size="10.5" font-family="JetBrains Mono" text-anchor="middle">חיבור 3x63A (400V)</text>
+              <text x="985" y="98" fill="#9ca3af" font-size="9" text-anchor="middle">גבול מגרש / חצר</text>
+            </g>
+
+            <!-- NODE 1: Roof Panel -->
+            <g class="cursor-pointer" onclick="switchView('roof')">
+              <rect x="35" y="140" width="245" height="175" rx="12" fill="#1c1917" stroke="#f59e0b" stroke-width="2.5" />
+              <rect x="45" y="150" width="225" height="26" rx="6" fill="#451a03" />
+              <text x="157" y="167" fill="#fde68a" font-size="11" font-weight="bold" text-anchor="middle">לוח גג סולארי IP65 (18TE)</text>
+              <text x="255" y="196" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="start">• ממיר היברידי 8-10kW</text>
+              <text x="255" y="214" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="start">• סוללת ליתיום HV (10-15kWh)</text>
+              <text x="255" y="232" fill="#94a3b8" font-size="9.5" text-anchor="start">• מפסק כבאים AC ראשי 32A</text>
+              <text x="255" y="249" fill="#94a3b8" font-size="9.5" text-anchor="start">• הגנות 2xStrings DC + SPD</text>
+              <text x="255" y="267" fill="#ef4444" font-size="9" font-weight="bold" text-anchor="start">דגש: קיר צפוני מוצל ומאוורר</text>
+              <rect x="45" y="280" width="225" height="18" rx="4" fill="#292524" stroke="#78716c" stroke-width="0.8"/>
+              <text x="157" y="293" fill="#d6d3d1" font-size="8.5" text-anchor="middle">2 מחרוזות PV (גג שטוח + רעפים)</text>
+            </g>
+
+            <!-- NODE 2: Board A -->
+            <g class="cursor-pointer" onclick="switchView('main')">
+              <rect x="300" y="140" width="250" height="160" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2.5" />
+              <rect x="310" y="150" width="230" height="26" rx="6" fill="#082f49" />
+              <text x="425" y="167" fill="#38bdf8" font-size="11.5" font-weight="bold" text-anchor="middle">לוח א' ראשי - מוח וחירום</text>
+              <text x="525" y="196" fill="#f87171" font-size="10" font-weight="bold" text-anchor="start">• מפסק ראשי 4P 63A + SPD</text>
+              <text x="525" y="213" fill="#38bdf8" font-size="10" text-anchor="start">• מונה חכם Smart Meter</text>
+              <text x="525" y="230" fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="start">• בורר Bypass 1-0-2 4P</text>
+              <text x="525" y="247" fill="#22d3ee" font-size="9.5" font-weight="bold" text-anchor="start">• פחת 10mA בריכת דגים (24/7)</text>
+              <text x="525" y="265" fill="#94a3b8" font-size="9" text-anchor="start">מקרר, ראוטר, תריסים, מאור, שער</text>
+            </g>
+
+            <!-- NODE 3: Board B -->
+            <g class="cursor-pointer" onclick="switchView('main')">
+              <rect x="610" y="140" width="260" height="160" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2.5" fill-opacity="0.3"/>
+              <rect x="620" y="150" width="240" height="26" rx="6" fill="#064e3b" />
+              <text x="740" y="167" fill="#a7f3d0" font-size="11.5" font-weight="bold" text-anchor="middle">לוח ב' ראשי - שגרה וכבדים</text>
+              <text x="845" y="195" fill="#34d399" font-size="10" font-weight="bold" text-anchor="start">• מפסק מבוא 4P 63A</text>
+              <text x="845" y="211" fill="#a7f3d0" font-size="9.5" text-anchor="start">• 2x VRF הייסנס + משאבת Daikin</text>
+              <text x="845" y="227" fill="#c084fc" font-size="9.5" font-weight="bold" text-anchor="start">• 2 עמדות EV (פחתים Type B)</text>
+              <text x="845" y="243" fill="#fb923c" font-size="9.5" text-anchor="start">• אינדוקציה, תנורים, מכונות כביסה</text>
+              <text x="845" y="259" fill="#38bdf8" font-size="9.5" text-anchor="start">• ג'קוזי חצר + הזנות לוחות משנה</text>
+            </g>
+
+            <!-- NODE 4: Floor 2 Sub-panel -->
+            <g class="cursor-pointer" onclick="switchView('floor2')">
+              <rect x="590" y="410" width="250" height="175" rx="12" fill="#1e1b4b" stroke="#818cf8" stroke-width="2.5" />
+              <rect x="600" y="420" width="230" height="24" rx="6" fill="#312e81" />
+              <text x="715" y="436" fill="#c7d2fe" font-size="11" font-weight="bold" text-anchor="middle">לוח משנה קומה ב' (36TE)</text>
+              <text x="820" y="462" fill="#a5b4fc" font-size="10" font-weight="bold" text-anchor="start">• מפסק מבוא 3x32A</text>
+              <text x="820" y="480" fill="#a5b4fc" font-size="9.5" text-anchor="start">• פחת ראשי קומה 40A / 30mA</text>
+              <text x="820" y="498" fill="#38bdf8" font-size="9.5" font-weight="bold" text-anchor="start">• מעגלי מחשבים WFH (מוגבה)</text>
+              <text x="820" y="516" fill="#38bdf8" font-size="9.5" text-anchor="start">• מאור ותריסי חילוץ (מוגבה)</text>
+              <text x="820" y="534" fill="#94a3b8" font-size="9.5" text-anchor="start">• שקעים כלליים ל-3 חדרי שינה</text>
+              <text x="820" y="552" fill="#fb923c" font-size="9.5" text-anchor="start">• תנורי חימום ישירים ב-2 מקלחות</text>
+              <text x="715" y="572" fill="#94a3b8" font-size="8.5" text-anchor="middle">מסדרון קומה שנייה</text>
+            </g>
+
+            <!-- NODE 5: Outdoor Sub-panel -->
+            <g class="cursor-pointer" onclick="switchView('outdoor')">
+              <rect x="880" y="410" width="210" height="175" rx="12" fill="#164e63" stroke="#06b6d4" stroke-width="2.5" />
+              <rect x="890" y="420" width="190" height="24" rx="6" fill="#155e75" />
+              <text x="985" y="436" fill="#cffafe" font-size="11" font-weight="bold" text-anchor="middle">לוח חוץ ואינטקס IP65 (24TE)</text>
+              <text x="1070" y="462" fill="#67e8f9" font-size="10" font-weight="bold" text-anchor="start">• מפסק מבוא 3x25A</text>
+              <text x="1070" y="479" fill="#67e8f9" font-size="9.5" text-anchor="start">• פחת ראשי עצמאי 30mA</text>
+              <text x="1070" y="497" fill="#a5f3fc" font-size="9" font-weight="bold" text-anchor="start">• תנור חוץ, גריל ומשטח</text>
+              <text x="1070" y="514" fill="#fef08a" font-size="9" font-weight="bold" text-anchor="start">• פחת 10mA אינטקס 5X3</text>
+              <text x="1070" y="531" fill="#94a3b8" font-size="9.5" text-anchor="start">• תאורת גינה והיקף</text>
+              <text x="1070" y="548" fill="#34d399" font-size="8.5" text-anchor="start">• 9 מודולים עתודה פנויים</text>
+              <text x="985" y="572" fill="#22d3ee" font-size="8.5" text-anchor="middle">אטום גשם ולחות IP65</text>
+            </g>
+
+            <!-- NODE 6: Local Fish Pond Isolator (Paket) -->
+            <g class="cursor-pointer" onclick="showCableInfo('fish-feed')">
+              <rect x="50" y="410" width="200" height="70" rx="10" fill="#164e63" stroke="#06b6d4" stroke-width="2" />
+              <circle cx="230" cy="430" r="5" fill="#06b6d4" />
+              <text x="215" y="434" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="start">פק"ט בריכת דגים</text>
+              <text x="150" y="452" fill="#a5f3fc" font-size="10" font-weight="bold" text-anchor="middle">מפסק ניתוק מקומי 2P IP65</text>
+              <text x="150" y="468" fill="#fef08a" font-size="8.5" text-anchor="middle">מוגן פחת 10mA מלוח א'</text>
+            </g>
+
+            <!-- Grounding Busbar -->
+            <g>
+              <rect x="40" y="615" width="1040" height="20" rx="5" fill="#14532d" stroke="#22c55e" stroke-width="1.2"/>
+              <text x="560" y="629" fill="#bbf7d0" font-size="10.5" font-weight="bold" text-anchor="middle" font-family="JetBrains Mono">
+                פס השוואת פוטנציאלים ראשי (פה"פ) ── מוליכי נחושת 16 ממ"ש לכל הלוחות והקונסטרוקציה הסולארית
+              </text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Cable Specification Detail Card -->
+        <div id="topo-details" class="mt-3.5 p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-2.5">
+          <div class="flex items-center gap-2">
+            <span id="topo-pill" class="px-2.5 py-0.5 rounded font-mono font-bold text-xs bg-cyan-600 text-white">הזנת בריכת דגים מלוח הבית</span>
+            <span id="topo-desc" class="text-slate-300">קו תת-קרקעי 3x2.5 ממ"ש מלוח א' בתוך הבית ישירות אל מפסק פק"ט מקומי אטום ליד הבריכה</span>
+          </div>
+          <div class="flex items-center gap-3 text-slate-400 font-mono text-[11px]">
+            <span>זרם: <strong id="topo-amp" class="text-white">1x10A</strong></span>
+            <span>•</span>
+            <span>הגנה: <strong id="topo-kw" class="text-cyan-400">פחת 10mA ייעודי</strong></span>
+            <span>•</span>
+            <span>מקור: <strong id="topo-vdrop" class="text-sky-400">פס UPS מוגבה סוללה</strong></span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Inspector Sidebar (Screen Only) -->
+    <div class="lg:col-span-4 xl:col-span-3" id="inspector-col">
+      <div class="sticky top-6 flex flex-col gap-4">
+
+        <!-- Inspector Card -->
+        <div id="inspector-card" class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 shadow-xl">
+          <div class="flex items-center justify-between pb-2.5 border-b border-slate-800">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">פרטי רכיב נבחר</span>
+            <span id="insp-badge" class="text-[11px] px-2 py-0.5 rounded font-mono font-bold bg-slate-800 text-slate-300">בחר רכיב בלוח</span>
+          </div>
+
+          <div class="mt-3 space-y-3 text-sm" id="insp-content">
+            <div class="text-center py-6 text-slate-500">
+              <svg class="w-8 h-8 mx-auto mb-2 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+              </svg>
+              לחץ על כל מפסק בלוח לצפייה במפרט הטכני
+            </div>
+          </div>
+        </div>
+
+        <!-- System Total Capacity Summary -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-xs space-y-2.5">
+          <h4 class="font-bold text-white text-sm flex items-center justify-between">
+            <span>סיכום תפוסת מערך הלוחות</span>
+            <span class="text-xs font-mono text-sky-400">137 / 186 TE</span>
+          </h4>
+          <div class="space-y-1.5">
+            <div>
+              <div class="flex justify-between text-slate-400 mb-0.5">
+                <span>לוח א' (מבוא, מוח, UPS ודגים)</span>
+                <span class="font-mono text-white">43/54 (79.6%)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-sky-500 h-full rounded-full" style="width: 79.6%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-slate-400 mb-0.5">
+                <span>לוח ב' (שגרה וכבדים)</span>
+                <span class="font-mono text-white">49/54 (90.7%)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full rounded-full" style="width: 90.7%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-slate-400 mb-0.5">
+                <span>לוח גג סולארי IP65</span>
+                <span class="font-mono text-white">14/18 (77.8%)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full rounded-full" style="width: 77.8%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-slate-400 mb-0.5">
+                <span>לוח משנה קומה ב'</span>
+                <span class="font-mono text-white">20/36 (55.6%)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-indigo-500 h-full rounded-full" style="width: 55.6%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-slate-400 mb-0.5">
+                <span>לוח חוץ ואינטקס IP65</span>
+                <span class="font-mono text-white">11/24 (45.8%)</span>
+              </div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-cyan-500 h-full rounded-full" style="width: 45.8%"></div>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex justify-between font-bold text-slate-200">
+              <span>עתודה פנויה כוללת:</span>
+              <span class="text-emerald-400 font-mono">49 מודולים (26.3%)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ================= BOARD A REGISTRY =================
+    const boardA_Row1 = [
+      { id: 'A01', panel: 'לוח א\' ראשי', name: 'מפסק ראשי 4P', code: 'MAIN-63A', modules: 4, type: '4P 63A 10kA', wire: '5x25 ממ"ש', feed: 'רשת חח"י (פילר)', tag: 'main', color: 'bg-red-600 border-red-500 text-white', desc: 'מפסק מבוא ראשי לארון החשמל המנתק 3 פאזות + אפס' },
+      { id: 'A02', panel: 'לוח א\' ראשי', name: 'מגן ברקים SPD', code: 'SPD-T2', modules: 4, type: 'Type 2 (3P+N)', wire: '16 ממ"ש לפה"פ', feed: 'מבוא ראשי', tag: 'main', color: 'bg-red-700 border-red-600 text-white', desc: 'הגנת נחשולי מתח וברקים תלת-פאזית להגנה על כרטיסי אלקטרוניקה' },
+      { id: 'A03', panel: 'לוח א\' ראשי', name: 'מונה חכם Smart Meter', code: 'METER-PV', modules: 4, type: '3P + CTs', wire: 'Cat6 תקשורת לממיר', feed: 'מבוא ראשי', tag: 'solar', color: 'bg-sky-700 border-sky-600 text-white', desc: 'מד אנרגיה דו-כיווני מסונכרן עם הממיר הסולארי והסוללה על הגג' },
+      { id: 'A04', panel: 'לוח א\' ראשי', name: 'בורר Bypass 4P', code: 'BYPASS-102', modules: 4, type: '1-0-2 4P 63A', wire: '5x16 ממ"ש', feed: 'סוללה / רשת', tag: 'solar', color: 'bg-amber-600 border-amber-500 text-white', desc: 'בורר מצבים ידני 4-קוטבי לעקיפת מערכת האגירה במקרה תקלה' },
+      { id: 'A05', panel: 'לוח א\' ראשי', name: 'נורות חיווי פאזות', code: 'INDICATOR', modules: 2, type: 'LED R-S-T', wire: '1.5 ממ"ש', feed: 'מבוא / חירום', tag: 'main', color: 'bg-red-900 border-red-700 text-white', desc: 'אינדיקציית נוכחות מתח רשת ומתח גיבוי סוללה' }
+    ];
+
+    const boardA_Row2 = [
+      { id: 'A06', panel: 'לוח א\' ראשי', name: 'הזנה ללוח גג וממיר', code: 'FEED-ROOF', modules: 3, type: '3P 25A דגם C', wire: '5x6 ממ"ש', feed: 'לוח גג סולארי', tag: 'solar', color: 'bg-amber-700 border-amber-600 text-white', desc: 'קו כוח תלת-פאזי דו-כיווני העולה ללוח הגג והממיר' },
+      { id: 'A07', panel: 'לוח א\' ראשי', name: 'מאמ"ת הזנה ללוח ב\'', code: 'FEED-B', modules: 3, type: '3P 63A דגם C', wire: '5x16 ממ"ש', feed: 'לוח ב\' כבדים', tag: 'heavy', color: 'bg-emerald-700 border-emerald-600 text-white', desc: 'הזנת כוח ראשית ממארז א\' אל מפסק המבוא של מארז ב\'' },
+      { id: 'A08', panel: 'לוח א\' ראשי', name: 'פחת מוגבה UPS', code: 'RCD-UPS', modules: 4, type: '4P 40A / 30mA Type A', wire: '10 ממ"ש', feed: 'פס גיבוי סוללה', tag: 'ups', color: 'bg-sky-800 border-sky-600 text-white', desc: 'מפסק מגן נגד התחשמלות לפס הצבירה המגובה סוללה (אפס מבודד)' },
+      { id: 'A09', panel: 'לוח א\' ראשי', name: 'מקרר ראשי', code: 'M22', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'קו ישיר למקרר מטבח ראשי להבטחת עבודה רציפה בהפסקת חשמל' },
+      { id: 'A10', panel: 'לוח א\' ראשי', name: 'תקשורת וראוטר', code: 'M23', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'ארון תקשורת, סוויץ\', נתב ומצלמות אבטחה' },
+      { id: 'A11', panel: 'לוח א\' ראשי', name: 'תאורה סלון/מטבח', code: 'M24', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'מעגל מאור בלבד קומת קרקע (LED חסכוני)' },
+      { id: 'A12', panel: 'לוח א\' ראשי', name: 'תאורת מבואה/מדרגות', code: 'M25', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'מעגל מאור מעברים, כניסה ומדרגות לקומה ב\'' },
+      { id: 'A13', panel: 'לוח א\' ראשי', name: 'עתודה פנויה', code: 'SPARE', modules: 4, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'מקום פנוי לעתודה ואוורור תרמי' }
+    ];
+
+    const boardA_Row3 = [
+      { id: 'A14', panel: 'לוח א\' ראשי', name: 'תריסים חילוץ קרקע', code: 'M26', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'מנועי תריסים לחילוץ ופתיחה בשעת חירום והפסקת רשת' },
+      { id: 'A15', panel: 'לוח א\' ראשי', name: 'שער ואינטרקום', code: 'M27', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'שער חניה חשמלי, דלת ומערכת אינטרקום' },
+      { id: 'A16', panel: 'לוח א\' ראשי', name: 'שקעי עבודה WFH קרקע', code: 'M28', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'UPS חיוני', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'עמדת מחשבים ומסכים לעבודה רציפה מהבית' },
+      { id: 'A17', panel: 'לוח א\' ראשי', name: 'הזנת גיבוי UPS לקומה ב\'', code: 'FEED-UPS-F2', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'UPS קומה ב\'', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'הזנת גיבוי סוללה ייעודית לשקעי מחשבים בחדרי עבודה בקומה ב\'' },
+      { id: 'A18', panel: 'לוח א\' ראשי', name: 'בקרי DIN בית חכם', code: 'SMART-CTRL', modules: 4, type: 'Shelly Pro 4PM', wire: 'פיקוד ותקשורת', feed: 'בקרה חכמה', tag: 'ups', color: 'bg-slate-700 border-slate-600 text-slate-200', desc: 'רכיבי DIN מרכזיים לשליטה בתאורה ותרחישים' },
+      { id: 'A19', panel: 'לוח א\' ראשי', name: 'פחת 10mA בריכת דגים', code: 'RCD-FISH-10mA', modules: 2, type: '2P 16A / 10mA RCD', wire: '2.5 ממ"ש', feed: 'פס גיבוי UPS', tag: 'pool', color: 'bg-cyan-500 border-cyan-400 text-slate-950 font-bold', desc: 'מפסק פחת רגיש 10mA ייעודי לבריכת דגים (24/7) מוזן מפס ה-UPS' },
+      { id: 'A20', panel: 'לוח א\' ראשי', name: 'משאבת דגים (לפק"ט)', code: 'PUMP-FISH-247', modules: 1, type: '1P 10A דגם C', wire: '3x2.5 ממ"ש', feed: 'מוגן פחת 10mA', tag: 'pool', color: 'bg-cyan-600 border-cyan-500 text-white', desc: 'קו כוח ישיר תת-קרקעי אל מפסק הפק"ט ליד הבריכה' },
+      { id: 'A21', panel: 'לוח א\' ראשי', name: 'עתודה פנויה', code: 'SPARE', modules: 7, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'מקום פנוי להרחבות עתידיות בלוח א\'' }
+    ];
+
+    // ================= BOARD B REGISTRY =================
+    const boardB_Row1 = [
+      { id: 'B01', panel: 'לוח ב\' כבדים', name: 'מפסק מבוא לוח ב\'', code: 'MAIN-B-63A', modules: 4, type: '4P 63A', wire: '5x16 ממ"ש מלוח א\'', feed: 'הזנה מלוח א\'', tag: 'heavy', color: 'bg-emerald-600 border-emerald-500 text-white', desc: 'מפסק ראשי של מארז הצרכנים הכבדים' },
+      { id: 'B02', panel: 'לוח ב\' כבדים', name: 'מעבה VRF 1 הייסנס', code: 'M01', modules: 3, type: '3P 16A דגם C', wire: '5x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-emerald-700 border-emerald-600 text-white', desc: 'יחידת מיזוג VRF חיצונית 1' },
+      { id: 'B03', panel: 'לוח ב\' כבדים', name: 'מעבה VRF 2 הייסנס', code: 'M02', modules: 3, type: '3P 16A דגם C', wire: '5x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-emerald-700 border-emerald-600 text-white', desc: 'יחידת מיזוג VRF חיצונית 2' },
+      { id: 'B04', panel: 'לוח ב\' כבדים', name: 'משאבת חום Daikin', code: 'M03', modules: 3, type: '3P 16A דגם C', wire: '5x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-emerald-700 border-emerald-600 text-white', desc: 'משאבת חום לחימום תת-רצפתי וחימום מי צריכה (DHW)' },
+      { id: 'B05', panel: 'לוח ב\' כבדים', name: 'כיריים אינדוקציה', code: 'M07', modules: 3, type: '3P 16A דגם C', wire: '5x2.5 ממ"ש', feed: 'שקע שוקו תלת-פאזי', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו כוח תלת-פאזי ישיר עבור כיריים אינדוקציה במטבח' },
+      { id: 'B06', panel: 'לוח ב\' כבדים', name: 'עתודה פנויה', code: 'SPARE', modules: 2, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'מרווח תרמי פנוי בין המפסקים התלת-פאזיים' }
+    ];
+
+    const boardB_Row2 = [
+      { id: 'B07', panel: 'לוח ב\' כבדים', name: 'הזנה לוח קומה ב\'', code: 'M17', modules: 3, type: '3P 32A דגם C', wire: '5x6 ממ"ש', feed: 'לוח משנה קומה ב\'', tag: 'heavy', color: 'bg-indigo-600 border-indigo-500 text-white', desc: 'כבל הזנה ראשי ללוח המשנה במסדרון קומה ב\'' },
+      { id: 'B08', panel: 'לוח ב\' כבדים', name: 'הזנה לוח חוץ וגינה', code: 'M18', modules: 3, type: '3P 25A דגם C', wire: '5x6 ממ"ש', feed: 'לוח חוץ IP65', tag: 'heavy', color: 'bg-indigo-600 border-indigo-500 text-white', desc: 'כבל הזנה ללוח מטבח חוץ, בריכת אינטקס ותאורת גינה' },
+      { id: 'B09', panel: 'לוח ב\' כבדים', name: 'ג\'קוזי חצר', code: 'M06', modules: 3, type: '3P 16A דגם C', wire: '5x4 ממ"ש', feed: 'פקט מוגן מים סמוך', tag: 'heavy', color: 'bg-emerald-800 border-emerald-700 text-white', desc: 'קו כוח תלת-פאזי ייעודי לג\'קוזי חצר' },
+      { id: 'B10', panel: 'לוח ב\' כבדים', name: 'עמדת EV 1 (רכב)', code: 'M04', modules: 4, type: 'RCBO 4P 16A Type B', wire: '5x6 ממ"ש', feed: 'עמדת טעינה 1', tag: 'heavy', color: 'bg-purple-600 border-purple-500 text-white', desc: 'הגנת דליפת DC תקנית (Type B) לעמדת טעינה ראשונה 11kW' },
+      { id: 'B11', panel: 'לוח ב\' כבדים', name: 'עמדת EV 2 (רכב)', code: 'M05', modules: 4, type: 'RCBO 4P 16A Type B', wire: '5x6 ממ"ש', feed: 'עמדת טעינה 2', tag: 'heavy', color: 'bg-purple-600 border-purple-500 text-white', desc: 'הגנת דליפת DC תקנית (Type B) לעמדת טעינה שנייה 11kW' },
+      { id: 'B12', panel: 'לוח ב\' כבדים', name: 'עתודה פנויה', code: 'SPARE', modules: 1, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה' }
+    ];
+
+    const boardB_Row3 = [
+      { id: 'B13', panel: 'לוח ב\' כבדים', name: 'פחת שגרה 4P', code: 'RCD-NORM', modules: 4, type: '4P 40A / 30mA Type A', wire: '10 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-slate-700 border-slate-600 text-white', desc: 'מפסק מגן נגד התחשמלות עבור כל מעגלי השגרה בלוח ב\'' },
+      { id: 'B14', panel: 'לוח ב\' כבדים', name: 'תנור אפייה', code: 'M08', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'מטבח פנימי', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו ישיר לתנור אפייה ראשי' },
+      { id: 'B15', panel: 'לוח ב\' כבדים', name: 'מיקרו משולב', code: 'M09', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'מטבח פנימי', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו ישיר לתנור מיקרוגל משולב' },
+      { id: 'B16', panel: 'לוח ב\' כבדים', name: 'מדיח כלים', code: 'M10', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'מטבח פנימי', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו ישיר למדיח כלים' },
+      { id: 'B17', panel: 'לוח ב\' כבדים', name: 'טוחן אשפה', code: 'M11', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'מתחת לכיור', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'שקע כוח ישיר מתחת לכיור עם הכנה ללחצן פנאומטי' },
+      { id: 'B18', panel: 'לוח ב\' כבדים', name: 'תמי 4', code: 'M12', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'שיש מטבח', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'שקע כוח לבר מים' },
+      { id: 'B19', panel: 'לוח ב\' כבדים', name: 'שקע אי / נינג\'ה', code: 'M13', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'אי מרכזי', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'שקע כוח למכשירי צלייה ובישול כבדים' },
+      { id: 'B20', panel: 'לוח ב\' כבדים', name: 'מכונת כביסה', code: 'M14', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'חדר כביסה', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו כוח ייעודי למכונת כביסה' },
+      { id: 'B21', panel: 'לוח ב\' כבדים', name: 'מייבש כביסה', code: 'M15', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'חדר כביסה', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו כוח ייעודי למייבש כביסה' },
+      { id: 'B22', panel: 'לוח ב\' כבדים', name: 'מגהץ קיטור', code: 'M16', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'חדר כביסה', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו כוח עבור עמדת גיהוץ' },
+      { id: 'B23', panel: 'לוח ב\' כבדים', name: 'שקעים סלון R', code: 'M19', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'סלון', tag: 'heavy', color: 'bg-slate-700 border-slate-600 text-white', desc: 'שקעים בלבד פאזה R' },
+      { id: 'B24', panel: 'לוח ב\' כבדים', name: 'שקעים מטבח S', code: 'M20', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'מטבח', tag: 'heavy', color: 'bg-slate-700 border-slate-600 text-white', desc: 'שקעים בלבד פאזה S' },
+      { id: 'B25', panel: 'לוח ב\' כבדים', name: 'שקעים ממ"ד T', code: 'M21', modules: 1, type: '1P 16A', wire: '3x2.5 ממ"ש', feed: 'ממ"ד', tag: 'heavy', color: 'bg-slate-700 border-slate-600 text-white', desc: 'שקעים בלבד פאזה T' },
+      { id: 'B26', panel: 'לוח ב\' כבדים', name: 'עתודה פנויה', code: 'SPARE', modules: 2, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה' }
+    ];
+
+    // ================= ROOF SOLAR PANEL =================
+    const boardRoof_Row1 = [
+      { id: 'R01', panel: 'לוח גג סולארי IP65', name: 'מפסק כבאים AC ראשי', code: 'FIRE-AC-32A', modules: 3, type: '3P 32A אטום IP65', wire: '5x6 ממ"ש מלוח א\'', feed: 'לוח א\' ראשי', tag: 'solar', color: 'bg-red-600 border-red-500 text-white', desc: 'מפסק פקט חירום אדום-צהוב לניתוק מהיר על ידי לוחמי אש' },
+      { id: 'R02', panel: 'לוח גג סולארי IP65', name: 'מאמ"ת מקומי לממיר', code: 'INV-AC-25A', modules: 3, type: '3P 25A דגם C', wire: '5x6 ממ"ש', feed: 'ממיר סולארי AC', tag: 'solar', color: 'bg-amber-600 border-amber-500 text-white', desc: 'מאמ"ת שירות מקומי על הגג לעבודות תחזוקה ובטיחות' },
+      { id: 'R03', panel: 'לוח גג סולארי IP65', name: 'מגן ברקים משני AC', code: 'SPD-AC-ROOF', modules: 4, type: 'SPD Type 2 AC', wire: '16 ממ"ש לפה"פ', feed: 'קו הזנת ממיר', tag: 'solar', color: 'bg-amber-700 border-amber-600 text-white', desc: 'הגנת נחשולי מתח מקומית עבור כרטיסי הממיר והסוללה' },
+      { id: 'R04', panel: 'לוח גג סולארי IP65', name: 'הגנות DC מחרוזת 1', code: 'DC-STR-1', modules: 2, type: '2P 1000V DC + SPD', wire: 'סולארי 4/6 ממ"ש', feed: 'פאנלים גג שטוח', tag: 'solar', color: 'bg-amber-500 border-amber-400 text-slate-950 font-bold', desc: 'מפסק ניתוק DC ומגן ברקים עבור String 1' },
+      { id: 'R05', panel: 'לוח גג סולארי IP65', name: 'הגנות DC מחרוזת 2', code: 'DC-STR-2', modules: 2, type: '2P 1000V DC + SPD', wire: 'סולארי 4/6 ממ"ש', feed: 'פאנלים גג רעפים', tag: 'solar', color: 'bg-amber-500 border-amber-400 text-slate-950 font-bold', desc: 'מפסק ניתוק DC ומגן ברקים עבור String 2' },
+      { id: 'R06', panel: 'לוח גג סולארי IP65', name: 'עתודה פנויה לגג', code: 'SPARE-ROOF', modules: 4, type: 'מקום ריק IP65', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה למחרוזת נוספת או אביזר בקרה' }
+    ];
+
+    // ================= FLOOR 2 SUB-PANEL REGISTRY =================
+    const boardFloor2_Row1 = [
+      { id: 'F01', panel: 'לוח משנה קומה ב\'', name: 'מפסק מבוא קומה ב\'', code: 'MAIN-F2-32A', modules: 3, type: '3P 32A', wire: '5x6 ממ"ש מלוח ב\'', feed: 'הזנה מלוח ב\'', tag: 'heavy', color: 'bg-indigo-600 border-indigo-500 text-white', desc: 'מפסק ראשי של לוח המשנה בקומה השנייה' },
+      { id: 'F02', panel: 'לוח משנה קומה ב\'', name: 'פחת קומה ב\'', code: 'RCD-F2', modules: 4, type: '4P 40A / 30mA Type A', wire: '6 ממ"ש', feed: 'מבוא קומה ב\'', tag: 'heavy', color: 'bg-indigo-700 border-indigo-600 text-white', desc: 'מפסק מגן נגד התחשמלות לקומת המגורים' },
+      { id: 'F03', panel: 'לוח משנה קומה ב\'', name: 'שקעי מחשבים WFH 1', code: 'F2-WFH1', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'הזנת UPS מלוח א\'', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'עמדת מחשבים חדר עבודה הורים (מוגבה סוללה)' },
+      { id: 'F04', panel: 'לוח משנה קומה ב\'', name: 'שקעי מחשבים WFH 2', code: 'F2-WFH2', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'הזנת UPS מלוח א\'', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'עמדת מחשבים חדר עבודה/נוער (מוגבה סוללה)' },
+      { id: 'F05', panel: 'לוח משנה קומה ב\'', name: 'מאור חדרי שינה ומסדרון', code: 'F2-LIGHT1', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'פס גיבוי UPS', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'תאורת לד חסכונית חדרי מגורים (מוגבה סוללה)' },
+      { id: 'F06', panel: 'לוח משנה קומה ב\'', name: 'מאור מקלחות ומרפסת', code: 'F2-LIGHT2', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'פס גיבוי UPS', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'תאורת חללים רטובים ומרפסת (מוגבה סוללה)' },
+      { id: 'F07', panel: 'לוח משנה קומה ב\'', name: 'תריסים חשמליים קומה ב\'', code: 'F2-SHUTTERS', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'פס גיבוי UPS', tag: 'ups', color: 'bg-sky-600 border-sky-500 text-white', desc: 'תריסי חילוץ ופתיחה בחירום לקומה ב\'' },
+      { id: 'F08', panel: 'לוח משנה קומה ב\'', name: 'עתודה פנויה', code: 'SPARE-F2', modules: 6, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה פנויה בשורה 1' }
+    ];
+
+    const boardFloor2_Row2 = [
+      { id: 'F09', panel: 'לוח משנה קומה ב\'', name: 'שקעים מאסטר הורים', code: 'F2-SKT-MST', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-indigo-800 border-indigo-600 text-white', desc: 'מעגל שקעים כלליים מאסטר הורים' },
+      { id: 'F10', panel: 'לוח משנה קומה ב\'', name: 'שקעים חדר ילדים 1', code: 'F2-SKT-CH1', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-indigo-800 border-indigo-600 text-white', desc: 'מעגל שקעים כלליים חדר ילדים 1' },
+      { id: 'F11', panel: 'לוח משנה קומה ב\'', name: 'שקעים חדר ילדים 2', code: 'F2-SKT-CH2', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-indigo-800 border-indigo-600 text-white', desc: 'מעגל שקעים כלליים חדר ילדים 2' },
+      { id: 'F12', panel: 'לוח משנה קומה ב\'', name: 'שקעים מסדרון ומרפסת', code: 'F2-SKT-BALC', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'רשת שגרה', tag: 'heavy', color: 'bg-indigo-800 border-indigo-600 text-white', desc: 'שקעים מעברים ומרפסת חיצונית' },
+      { id: 'F13', panel: 'לוח משנה קומה ב\'', name: 'תנור מקלחת הורים', code: 'F2-HEAT-P', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'שקע כוח ישיר', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'תנור חימום / מפזר חום במקלחת הורים' },
+      { id: 'F14', panel: 'לוח משנה קומה ב\'', name: 'תנור מקלחת כללית', code: 'F2-HEAT-G', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'שקע כוח ישיר', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'תנור חימום / מפזר חום במקלחת כללית' },
+      { id: 'F15', panel: 'לוח משנה קומה ב\'', name: 'בקרי DIN קומה ב\'', code: 'F2-CTRL', modules: 2, type: 'Shelly Pro 2PM', wire: 'פיקוד DIN', feed: 'תאורה חכמה', tag: 'ups', color: 'bg-slate-700 border-slate-600 text-slate-200', desc: 'בקרת תאורה ותרחישים לקומה העליונה' },
+      { id: 'F16', panel: 'לוח משנה קומה ב\'', name: 'עתודה פנויה', code: 'SPARE-F2', modules: 10, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה נרחבת לבקרים נוספים' }
+    ];
+
+    // ================= OUTDOOR SUB-PANEL REGISTRY (WITHOUT FISH POND) =================
+    const boardOutdoor_Row1 = [
+      { id: 'O01', panel: 'לוח חוץ ואינטקס IP65', name: 'מפסק מבוא חוץ 3P', code: 'MAIN-OUT-25A', modules: 3, type: '3P 25A', wire: '5x6 ממ"ש מלוח ב\'', feed: 'הזנה מלוח ב\'', tag: 'heavy', color: 'bg-cyan-700 border-cyan-600 text-white', desc: 'מפסק ראשי של לוח החוץ במטבח החוץ (17.2kW זמין)' },
+      { id: 'O02', panel: 'לוח חוץ ואינטקס IP65', name: 'פחת ראשי שגרה חוץ', code: 'RCD-OUT-30mA', modules: 4, type: '4P 25A / 30mA Type A', wire: '6 ממ"ש', feed: 'מבוא חוץ', tag: 'heavy', color: 'bg-cyan-800 border-cyan-700 text-white', desc: 'מפסק מגן עצמאי למטבח החוץ - קצר בחוץ לא מפיל את הבית' },
+      { id: 'O03', panel: 'לוח חוץ ואינטקס IP65', name: 'תנור אפייה חוץ', code: 'OUT-OVEN', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'שקע כוח ישיר', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'קו כוח ייעודי לתנור אפייה במטבח החוץ' },
+      { id: 'O04', panel: 'לוח חוץ ואינטקס IP65', name: 'מקרר חוץ ובר מים', code: 'OUT-FRIDGE', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'שקע כוח ישיר', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'מקרר שירות חוץ ומתקן מים צוננים' },
+      { id: 'O05', panel: 'לוח חוץ ואינטקס IP65', name: 'משטח גריל / נינג\'ה', code: 'OUT-GRILL', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש', feed: 'שיש מטבח חוץ', tag: 'heavy', color: 'bg-orange-600 border-orange-500 text-white', desc: 'שקעי עבודה חזקים למכשירי צלייה וטיגון בחוץ' },
+      { id: 'O06', panel: 'לוח חוץ ואינטקס IP65', name: 'תאורת גינה והיקף', code: 'OUT-LIGHT', modules: 1, type: '1P 10A דגם B', wire: '3x1.5 ממ"ש', feed: 'מאור חוץ', tag: 'heavy', color: 'bg-slate-700 border-slate-600 text-white', desc: 'תאורת פרגולה, צמחייה ותאורת חצר' },
+      { id: 'O07', panel: 'לוח חוץ ואינטקס IP65', name: 'עתודה פנויה', code: 'SPARE-OUT', modules: 1, type: 'מקום ריק', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה בשורה 1' }
+    ];
+
+    const boardOutdoor_Row2 = [
+      { id: 'O08', panel: 'לוח חוץ ואינטקס IP65', name: 'פחת רגיש 10mA אינטקס', code: 'RCD-INTEX-10mA', modules: 2, type: '2P 16A / 10mA RCD', wire: '2.5 ממ"ש', feed: 'מבוא חוץ', tag: 'pool', color: 'bg-cyan-500 border-cyan-400 text-slate-950 font-bold', desc: 'הגנה קריטית ברגישות שיא (10mA) למבני מים ובריכת אינטקס' },
+      { id: 'O09', panel: 'לוח חוץ ואינטקס IP65', name: 'משאבת חול אינטקס 5X3', code: 'PUMP-INTEX', modules: 1, type: '1P 16A דגם C', wire: '3x2.5 ממ"ש IP66', feed: 'מוגן פחת 10mA', tag: 'pool', color: 'bg-cyan-600 border-cyan-500 text-white', desc: 'שקע מוגן מים IP66 במרחק תקני מבריכת האינטקס' },
+      { id: 'O10', panel: 'לוח חוץ ואינטקס IP65', name: 'עתודה פנויה בחוץ', code: 'SPARE-OUT', modules: 9, type: 'מקום ריק IP65', wire: '-', feed: '-', tag: 'spare', color: 'bg-slate-800/80 border-dashed border-slate-600 text-slate-500', desc: 'עתודה נרחבת בלוח החוץ (בריכת הדגים מחוברת לבית)' }
+    ];
+
+    const cableSpecs = {
+      'grid': {
+        name: 'כבל מבוא ראשי מחברת החשמל',
+        color: 'bg-red-600 text-white',
+        desc: 'כבל תת-קרקעי 5x25 ממ"ש XLPE נחושת בצינור קוברה 75 מ"מ, מפילר הרשת בגבול המגרש ישירות למפסק הראשי בלוח א\'. מוכן לשדרוג עתידי ל-3x80A.',
+        amp: '3x63A (מאושר עד 3x100A באדמה)',
+        kw: '43.5 kW',
+        vdrop: '< 0.8%'
+      },
+      'roof-ac': {
+        name: 'הזנת AC דו-כיוונית ללוח הגג והממיר',
+        color: 'bg-amber-600 text-white',
+        desc: 'כבל 5x6 ממ"ש היוצא ממאמ"ת 3x25A בלוח א\' ועולה ללוח הגג הסולארי IP65. מעביר מתח לממיר ומזרים ייצור סולארי חזרה לבית ולרשת.',
+        amp: '3x25A',
+        kw: '17.2 kW',
+        vdrop: '< 1.1%'
+      },
+      'roof-eps': {
+        name: 'קו גיבוי חירום ממוצא EPS סולארי',
+        color: 'bg-sky-600 text-white',
+        desc: 'כבל 5x6 ממ"ש היורד ממוצא ה-Emergency Power Supply (EPS) של הממיר והסוללה על הגג אל בורר ה-Bypass ופס ה-UPS המבודד בלוח א\'.',
+        amp: '3x25A גיבוי',
+        kw: 'עד 10 kW בסוללה',
+        vdrop: 'אפס מבודד הרמטית'
+      },
+      'smart-meter': {
+        name: 'תקשורת מונה חכם (Smart Meter CTs)',
+        color: 'bg-emerald-600 text-white',
+        desc: 'כבל רשת מסוכך Cat6 FTP/STP בצינור נפרד (איסור על השחלה עם כבלי כוח) לסינכרון מדידת יבוא/יצוא בזמן אמת בין הלוח הראשי לממיר בגג.',
+        amp: 'RS485 Modbus',
+        kw: 'תקשורת נתונים',
+        vdrop: 'סיכוך מלא'
+      },
+      'bridge-ab': {
+        name: 'גישור ראשי פנימי בין לוח א\' ללוח ב\'',
+        color: 'bg-emerald-700 text-white',
+        desc: 'מוליכי נחושת גמישים 5x16 ממ"ש עם סופיות כפולות לחוצות, המחברים את מאמ"ת ההזנה 3x63A בלוח א\' אל מפסק המבוא 4P 63A של לוח ב\'.',
+        amp: '3x63A',
+        kw: '43.5 kW',
+        vdrop: '< 0.05%'
+      },
+      'floor2-feed': {
+        name: 'הזנת כוח ראשית ללוח קומה ב\'',
+        color: 'bg-indigo-600 text-white',
+        desc: 'כבל 5x6 ממ"ש המוגן במאמ"ת 3x32A בלוח ב\' ועולה לפיר המסדרון של קומה ב\'. מזין את שקעי החדרים, המזגנים ותנורי המקלחות.',
+        amp: '3x32A',
+        kw: '22 kW',
+        vdrop: '< 0.9%'
+      },
+      'floor2-ups': {
+        name: 'הזנת גיבוי סוללה ייעודית לקומה ב\'',
+        color: 'bg-sky-500 text-white',
+        desc: 'כבל 3x2.5 ממ"ש היוצא ישירות מפס ה-UPS של לוח א\' אל לוח קומה ב\' עבור שקעי מחשבים (WFH), תאורת מעברים ותריסי חילוץ בעת עלטה.',
+        amp: '1x16A (מוגבה)',
+        kw: '3.6 kW',
+        vdrop: '< 1.2%'
+      },
+      'outdoor-feed': {
+        name: 'הזנת לוח חוץ, מטבח גינה ובריכת אינטקס',
+        color: 'bg-cyan-600 text-white',
+        desc: 'כבל 5x6 ממ"ש ירוק XLPE תת-קרקעי המוגן במאמ"ת 3x25A בלוח ב\' ומוביל לארון IP65 בחצר. מזין את משאבת האינטקס (10mA) ותנור החוץ.',
+        amp: '3x25A',
+        kw: '17.2 kW',
+        vdrop: '< 1.0%'
+      },
+      'fish-feed': {
+        name: 'הזנת בריכת דגים 24/7 (לוח א\' ראשי)',
+        color: 'bg-cyan-600 text-white',
+        desc: 'כבל תת-קרקעי 3x2.5 ממ"ש היוצא ישירות מלוח א\' (פס UPS מוגבה סוללה, דרך פחת 10mA נפרד A19 ומאמ"ת A20) אל מפסק הפק"ט ליד הבריכה.',
+        amp: '1x10A',
+        kw: '0.5 kW רציף',
+        vdrop: 'מוגן בפחת 10mA מוגבה סוללה'
+      }
+    };
+
+    // Render helper function with dedicated text classes
+    function renderRow(containerId, items) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `col-span-${item.modules} breaker-card rounded-lg p-1.5 flex flex-col justify-between border ${item.color} cursor-pointer text-center relative overflow-hidden shadow-sm`;
+        div.dataset.id = item.id;
+        div.dataset.tag = item.tag;
+
+        div.innerHTML = `
+          <div class="flex items-center justify-between breaker-meta text-[9px] opacity-80 font-mono">
+            <span>${item.code}</span>
+            <span>${item.modules}TE</span>
+          </div>
+          <div class="breaker-title font-bold text-[11px] leading-tight my-1 truncate px-0.5" title="${item.name}">${item.name}</div>
+          <div class="breaker-meta text-[9px] font-mono opacity-90 truncate">${item.type}</div>
+        `;
+
+        div.onclick = () => selectComponent(item, div);
+        container.appendChild(div);
+      });
+    }
+
+    // Inspector selection
+    let activeElement = null;
+    function selectComponent(item, el) {
+      if (activeElement) activeElement.classList.remove('selected');
+      activeElement = el;
+      el.classList.add('selected');
+
+      const inspContent = document.getElementById('insp-content');
+      const inspBadge = document.getElementById('insp-badge');
+
+      inspBadge.textContent = item.code;
+      inspBadge.className = `text-[11px] px-2 py-0.5 rounded font-mono font-bold ${item.color}`;
+
+      inspContent.innerHTML = `
+        <div>
+          <span class="text-[10px] text-sky-400 font-bold block mb-0.5">${item.panel}</span>
+          <h3 class="text-base font-bold text-white">${item.name}</h3>
+          <p class="text-slate-400 text-xs mt-0.5 leading-relaxed">${item.desc}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-800">
+          <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">רוחב מודולרי:</span>
+            <span class="font-mono text-white font-bold">${item.modules} TE (${item.modules * 18} מ"מ)</span>
+          </div>
+          <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">סוג מבטח/דגם:</span>
+            <span class="font-mono text-white font-bold truncate">${item.type}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">חתך מוליכים:</span>
+            <span class="font-mono text-sky-400 font-bold">${item.wire}</span>
+          </div>
+          <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+            <span class="text-slate-500 block text-[10px]">מקור הזנה:</span>
+            <span class="font-mono text-amber-400 font-bold truncate">${item.feed}</span>
+          </div>
+        </div>
+
+        <div class="pt-2 text-[11px] text-slate-500 border-t border-slate-800 flex justify-between">
+          <span>מזהה מערכת: <strong>${item.id}</strong></span>
+          <span>עמידה בתקן: <strong>חוק החשמל (מבני מים)</strong></span>
+        </div>
+      `;
+    }
+
+    // View switching
+    function switchView(view) {
+      const sections = {
+        main: ['sec-boardA', 'sec-boardB'],
+        roof: ['sec-boardRoof'],
+        floor2: ['sec-boardFloor2'],
+        outdoor: ['sec-boardOutdoor'],
+        topology: ['sec-topology']
+      };
+
+      const allSecs = ['sec-boardA', 'sec-boardB', 'sec-boardRoof', 'sec-boardFloor2', 'sec-boardOutdoor', 'sec-topology'];
+
+      allSecs.forEach(s => {
+        const el = document.getElementById(s);
+        if (!el) return;
+        if (view === 'all') {
+          el.style.display = 'block';
+        } else if (sections[view] && sections[view].includes(s)) {
+          el.style.display = 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      ['all', 'main', 'roof', 'floor2', 'outdoor', 'topology'].forEach(v => {
+        const btn = document.getElementById(`tab-${v}`);
+        if (!btn) return;
+        if (v === view) {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold bg-sky-600 text-white transition';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg font-bold text-slate-300 hover:text-white transition';
+        }
+      });
+
+      if (view === 'topology') {
+        const topoEl = document.getElementById('sec-topology');
+        if (topoEl) topoEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function showCableInfo(key) {
+      const data = cableSpecs[key];
+      if (!data) return;
+      document.getElementById('topo-pill').textContent = data.name;
+      document.getElementById('topo-pill').className = `px-2.5 py-0.5 rounded font-mono font-bold text-xs ${data.color}`;
+      document.getElementById('topo-desc').textContent = data.desc;
+      document.getElementById('topo-amp').textContent = data.amp;
+      document.getElementById('topo-kw').textContent = data.kw;
+      document.getElementById('topo-vdrop').textContent = data.vdrop;
+    }
+
+    function highlightPath(type) {
+      const paths = {
+        grid: ['path-grid', 'path-bridge-ab'],
+        solar: ['path-solar-ac', 'path-solar-eps', 'path-smart-meter'],
+        ups: ['path-solar-eps', 'path-ups-floor2', 'path-fish-pond'],
+        subs: ['path-sub-floor2', 'path-sub-outdoor', 'path-ups-floor2', 'path-fish-pond'],
+        all: ['path-grid', 'path-solar-ac', 'path-solar-eps', 'path-smart-meter', 'path-bridge-ab', 'path-sub-floor2', 'path-ups-floor2', 'path-sub-outdoor', 'path-fish-pond']
+      };
+
+      document.querySelectorAll('.topo-path').forEach(p => {
+        p.style.opacity = '0.2';
+        p.style.filter = 'grayscale(1)';
+      });
+
+      const active = paths[type] || paths.all;
+      active.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '1';
+          el.style.filter = 'none';
+        }
+      });
+    }
+
+    // Filter functionality
+    function setFilter(tag) {
+      document.querySelectorAll('.breaker-card').forEach(card => {
+        if (tag === 'all' || card.dataset.tag === tag) {
+          card.style.opacity = '1';
+          card.style.filter = 'none';
+        } else {
+          card.style.opacity = '0.2';
+          card.style.filter = 'grayscale(1)';
+        }
+      });
+
+      ['all', 'ups', 'solar', 'heavy', 'pool', 'spare'].forEach(t => {
+        const btn = document.getElementById(`btn-${t}`);
+        if (!btn) return;
+        if (t === tag) {
+          btn.className = 'px-2 py-0.5 rounded bg-sky-600 text-white font-bold';
+        } else {
+          btn.className = 'px-2 py-0.5 rounded text-slate-300 hover:text-white';
+        }
+      });
+    }
+
+    // Trigger Print with Auto-Reset
+    function triggerPrint(mode) {
+      setFilter('all');
+      if (mode === 'all') {
+        switchView('all');
+      }
+      setTimeout(() => {
+        window.print();
+      }, 150);
+    }
+
+    // Initial render
+    window.onload = () => {
+      renderRow('boardA-r1', boardA_Row1);
+      renderRow('boardA-r2', boardA_Row2);
+      renderRow('boardA-r3', boardA_Row3);
+
+      renderRow('boardB-r1', boardB_Row1);
+      renderRow('boardB-r2', boardB_Row2);
+      renderRow('boardB-r3', boardB_Row3);
+
+      renderRow('boardRoof-r1', boardRoof_Row1);
+
+      renderRow('boardFloor2-r1', boardFloor2_Row1);
+      renderRow('boardFloor2-r2', boardFloor2_Row2);
+
+      renderRow('boardOutdoor-r1', boardOutdoor_Row1);
+      renderRow('boardOutdoor-r2', boardOutdoor_Row2);
+
+      const firstEl = document.querySelector('[data-id="A19"]');
+      if (firstEl) selectComponent(boardA_Row3[5], firstEl);
+    };
+  </script>
+</body>
+</html>
